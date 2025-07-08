@@ -1,0 +1,187 @@
+<?xml version="1.0" encoding="utf-8"?><feed xmlns="http://www.w3.org/2005/Atom" ><generator uri="https://jekyllrb.com/" version="4.4.1">Jekyll</generator><link href="http://localhost:4000/feed.xml" rel="self" type="application/atom+xml" /><link href="http://localhost:4000/" rel="alternate" type="text/html" /><updated>2025-07-08T20:09:51+10:00</updated><id>http://localhost:4000/feed.xml</id><title type="html">Happy Release Day</title><subtitle>I&apos;m currently making the first version of this app and I&apos;m not sure what it&apos;ll be or if it will work. It&apos;s a very strange thing to chat in the command line and have Claude Code write things that I test and ask it to fix. There&apos;s a part of it that seems very familiar but it&apos;s odd to not have the skill to directly edit or fix things (yet). </subtitle><entry><title type="html">Starting to test out how to build Happy Release Day with Claude Code</title><link href="http://localhost:4000/ios/swift/app/2025/06/19/testing-claude-code.html" rel="alternate" type="text/html" title="Starting to test out how to build Happy Release Day with Claude Code" /><published>2025-06-19T19:40:43+10:00</published><updated>2025-06-19T19:40:43+10:00</updated><id>http://localhost:4000/ios/swift/app/2025/06/19/testing-claude-code</id><content type="html" xml:base="http://localhost:4000/ios/swift/app/2025/06/19/testing-claude-code.html"><![CDATA[<p>I decided to try something different today. Instead of opening Xcode and starting to code from scratch, I wanted to see what would happen if I built an entire iOS app using Claude Code - Anthropic’s new AI-powered development tool. The result? A fully functional music visualization app that went from a basic SwiftUI template to a sophisticated audio processing and video export tool.</p>
+
+<h2 id="the-beginning-a-simple-idea">The Beginning: A Simple Idea</h2>
+
+<p>It started with a basic concept: “I want to help musicians create promotional videos for their music releases.” Nothing too crazy - just process audio files, generate some waveform visualizations, and export videos in social media formats. Simple, right?</p>
+
+<p>I began with the most basic iOS app template you can imagine:</p>
+
+<div class="language-swift highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kd">@main</span>
+<span class="kd">struct</span> <span class="kt">HappyReleaseDayApp</span><span class="p">:</span> <span class="kt">App</span> <span class="p">{</span>
+    <span class="k">var</span> <span class="nv">sharedModelContainer</span><span class="p">:</span> <span class="kt">ModelContainer</span> <span class="o">=</span> <span class="p">{</span>
+        <span class="k">let</span> <span class="nv">schema</span> <span class="o">=</span> <span class="kt">Schema</span><span class="p">([</span>
+            <span class="kt">Item</span><span class="o">.</span><span class="k">self</span><span class="p">,</span>
+        <span class="p">])</span>
+        <span class="c1">// ... basic SwiftData setup</span>
+    <span class="p">}()</span>
+
+    <span class="k">var</span> <span class="nv">body</span><span class="p">:</span> <span class="kd">some</span> <span class="kt">Scene</span> <span class="p">{</span>
+        <span class="kt">WindowGroup</span> <span class="p">{</span>
+            <span class="kt">ContentView</span><span class="p">()</span>
+        <span class="p">}</span>
+        <span class="o">.</span><span class="nf">modelContainer</span><span class="p">(</span><span class="n">sharedModelContainer</span><span class="p">)</span>
+    <span class="p">}</span>
+<span class="p">}</span>
+</code></pre></div></div>
+
+<p>And the ContentView? Pure boilerplate:</p>
+
+<div class="language-swift highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kd">struct</span> <span class="kt">ContentView</span><span class="p">:</span> <span class="kt">View</span> <span class="p">{</span>
+    <span class="kd">@Environment</span><span class="p">(\</span><span class="o">.</span><span class="n">modelContext</span><span class="p">)</span> <span class="kd">private</span> <span class="k">var</span> <span class="nv">modelContext</span>
+    <span class="kd">@Query</span> <span class="kd">private</span> <span class="k">var</span> <span class="nv">items</span><span class="p">:</span> <span class="p">[</span><span class="kt">Item</span><span class="p">]</span>
+
+    <span class="k">var</span> <span class="nv">body</span><span class="p">:</span> <span class="kd">some</span> <span class="kt">View</span> <span class="p">{</span>
+        <span class="kt">NavigationSplitView</span> <span class="p">{</span>
+            <span class="kt">List</span> <span class="p">{</span>
+                <span class="kt">ForEach</span><span class="p">(</span><span class="n">items</span><span class="p">)</span> <span class="p">{</span> <span class="n">item</span> <span class="k">in</span>
+                    <span class="kt">NavigationLink</span> <span class="p">{</span>
+                        <span class="kt">Text</span><span class="p">(</span><span class="s">"Item at </span><span class="se">\(</span><span class="n">item</span><span class="o">.</span><span class="n">timestamp</span><span class="p">,</span> <span class="nv">format</span><span class="p">:</span> <span class="kt">Date</span><span class="o">.</span><span class="kt">FormatStyle</span><span class="p">(</span><span class="nv">date</span><span class="p">:</span> <span class="o">.</span><span class="n">numeric</span><span class="p">,</span> <span class="nv">time</span><span class="p">:</span> <span class="o">.</span><span class="n">standard</span><span class="p">)</span><span class="se">)</span><span class="s">"</span><span class="p">)</span>
+                    <span class="p">}</span> <span class="nv">label</span><span class="p">:</span> <span class="p">{</span>
+                        <span class="kt">Text</span><span class="p">(</span><span class="n">item</span><span class="o">.</span><span class="n">timestamp</span><span class="p">,</span> <span class="nv">format</span><span class="p">:</span> <span class="kt">Date</span><span class="o">.</span><span class="kt">FormatStyle</span><span class="p">(</span><span class="nv">date</span><span class="p">:</span> <span class="o">.</span><span class="n">numeric</span><span class="p">,</span> <span class="nv">time</span><span class="p">:</span> <span class="o">.</span><span class="n">standard</span><span class="p">))</span>
+                    <span class="p">}</span>
+                <span class="p">}</span>
+                <span class="o">.</span><span class="nf">onDelete</span><span class="p">(</span><span class="nv">perform</span><span class="p">:</span> <span class="n">deleteItems</span><span class="p">)</span>
+            <span class="p">}</span>
+            <span class="c1">// ... basic CRUD operations</span>
+        <span class="p">}</span>
+    <span class="p">}</span>
+<span class="p">}</span>
+</code></pre></div></div>
+
+<p>That was commit #1: “Initial Commit” - 883 lines of mostly Xcode-generated boilerplate code. Just a basic SwiftUI app with SwiftData that could add and delete timestamp items. Nothing fancy.</p>
+
+<h2 id="what-happened-next">What Happened Next</h2>
+
+<p>Over the course of 105 more commits, Claude Code helped me transform this basic template into something I never expected:</p>
+
+<p><strong>HappyReleaseDay</strong> - A complete music visualization and video export app featuring:</p>
+
+<ul>
+  <li><strong>Audio File Processing</strong>: Local audio import and analysis using AVFoundation</li>
+  <li><strong>Real-time Waveform Visualization</strong>: Pure SwiftUI Canvas-based rendering that syncs with audio playback</li>
+  <li><strong>Apple Music Integration</strong>: Search and auto-fill project metadata from Apple Music</li>
+  <li><strong>Multiple Export Formats</strong>: Square (Instagram), Landscape (YouTube), Portrait (TikTok)</li>
+  <li><strong>Template System</strong>: Waveform, Spectrum, and Minimal visual styles</li>
+  <li><strong>Audio Trimming</strong>: Built-in audio editor with visual waveform trimming</li>
+  <li><strong>Image Processing</strong>: Smart image cropping with drag/zoom controls</li>
+  <li><strong>Project Management</strong>: Full SwiftData persistence with broken file detection</li>
+  <li><strong>Progress Tracking</strong>: Real-time export progress with background processing</li>
+</ul>
+
+<h2 id="the-development-experience">The Development Experience</h2>
+
+<p>What surprised me most wasn’t just that Claude Code could write code - it was how it approached development like an experienced iOS developer:</p>
+
+<h3 id="1-architectural-decisions">1. <strong>Architectural Decisions</strong></h3>
+<p>Claude Code consistently made good architectural choices:</p>
+<ul>
+  <li>Separated audio processing into dedicated <code class="language-plaintext highlighter-rouge">AudioProcessor</code> class</li>
+  <li>Used SwiftData for persistence with proper model relationships</li>
+  <li>Implemented proper file management with sandboxed storage</li>
+  <li>Created reusable UI components and followed SwiftUI best practices</li>
+</ul>
+
+<h3 id="2-error-handling--edge-cases">2. <strong>Error Handling &amp; Edge Cases</strong></h3>
+<p>It anticipated problems I hadn’t even thought of:</p>
+<ul>
+  <li>Handling broken file paths when projects are moved</li>
+  <li>Managing security-scoped resources for imported files</li>
+  <li>Implementing proper cleanup for temporary files</li>
+  <li>Adding progress indicators for long-running operations</li>
+</ul>
+
+<h3 id="3-user-experience-details">3. <strong>User Experience Details</strong></h3>
+<p>Small touches that make a real difference:</p>
+<ul>
+  <li>Loading indicators for online iCloud image downloads</li>
+  <li>Smart image cropping with proper gesture handling</li>
+  <li>Audio playback synchronization with visual feedback</li>
+  <li>Intuitive project creation flow with validation</li>
+</ul>
+
+<h3 id="4-performance-optimization">4. <strong>Performance Optimization</strong></h3>
+<p>Technical optimizations I might have overlooked:</p>
+<ul>
+  <li>Canvas-based waveform rendering for better performance</li>
+  <li>Image downsampling for memory efficiency</li>
+  <li>Background audio processing to keep UI responsive</li>
+  <li>Proper resource cleanup and memory management</li>
+</ul>
+
+<h2 id="the-current-state">The Current State</h2>
+
+<p>Today, the app has grown to include:</p>
+<ul>
+  <li><strong>15+ SwiftUI views</strong> with complex interactions</li>
+  <li><strong>Custom audio processing</strong> with AVFoundation</li>
+  <li><strong>Real-time Canvas rendering</strong> for waveforms</li>
+  <li><strong>Video export pipeline</strong> with ImageRenderer</li>
+  <li><strong>Complete project lifecycle</strong> management</li>
+  <li><strong>Smart image handling</strong> with crop/resize functionality</li>
+  <li><strong>Apple Music API integration</strong> for metadata</li>
+  <li><strong>Cross-platform compatibility</strong> (iOS/macOS)</li>
+</ul>
+
+<p>The codebase is well-organized, follows SwiftUI best practices, and includes comprehensive error handling. It feels like it was built by an experienced iOS development team.</p>
+
+<h2 id="what-i-learned">What I Learned</h2>
+
+<h3 id="claude-code-strengths">Claude Code Strengths:</h3>
+<ol>
+  <li><strong>Rapid Prototyping</strong>: From idea to working prototype incredibly fast</li>
+  <li><strong>Best Practices</strong>: Consistently follows platform conventions and patterns</li>
+  <li><strong>Complex Integration</strong>: Seamlessly integrated multiple frameworks (AVFoundation, SwiftData, PhotosUI)</li>
+  <li><strong>Problem Solving</strong>: Anticipated edge cases and implemented robust solutions</li>
+  <li><strong>Code Quality</strong>: Clean, maintainable code with proper separation of concerns</li>
+</ol>
+
+<h3 id="areas-for-improvement">Areas for Improvement:</h3>
+<ol>
+  <li><strong>Platform-Specific Nuances</strong>: Occasionally needed guidance on iOS-specific behaviors</li>
+  <li><strong>Performance Profiling</strong>: Required human insight for optimization decisions</li>
+  <li><strong>Design Decisions</strong>: Best when given clear requirements and constraints</li>
+</ol>
+
+<h2 id="the-bottom-line">The Bottom Line</h2>
+
+<p>Starting from a basic “Hello World” iOS template, Claude Code helped me build a sophisticated music visualization app that I’m genuinely proud of. The development process felt collaborative - like pair programming with an incredibly knowledgeable partner who never gets tired and always remembers the details.</p>
+
+<p>Would I recommend Claude Code for iOS development? Absolutely. But it’s not about replacing developers - it’s about amplifying what we can accomplish. It handles the repetitive, error-prone parts while you focus on the creative and strategic decisions.</p>
+
+<p>The first commit was 883 lines of boilerplate. Today, HappyReleaseDay is a fully functional app that musicians can actually use to promote their work. That transformation happened in weeks, not months.</p>
+
+<p><em>Want to see the code? Check out the <a href="https://github.com/attilaacs/HappyReleaseDay-iOS">HappyReleaseDay repository</a> to see the full development journey from commit #1 to today.</em></p>
+
+<hr />
+
+<h2 id="technical-highlights">Technical Highlights</h2>
+
+<p>For the developers reading this, here are some interesting technical aspects that emerged:</p>
+
+<h3 id="audio-processing-pipeline">Audio Processing Pipeline</h3>
+<div class="language-swift highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kd">class</span> <span class="kt">AudioProcessor</span> <span class="p">{</span>
+    <span class="kd">func</span> <span class="nf">processAudioFile</span><span class="p">(</span><span class="n">_</span> <span class="nv">url</span><span class="p">:</span> <span class="kt">URL</span><span class="p">)</span> <span class="k">async</span> <span class="k">throws</span> <span class="o">-&gt;</span> <span class="kt">AudioAnalysis</span> <span class="p">{</span>
+        <span class="c1">// Real-time waveform generation</span>
+        <span class="c1">// Audio trimming with visual feedback</span>
+        <span class="c1">// Format conversion and optimization</span>
+    <span class="p">}</span>
+<span class="p">}</span>
+</code></pre></div></div>
+
+<h3 id="swiftui-canvas-waveform">SwiftUI Canvas Waveform</h3>
+<div class="language-swift highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kt">Canvas</span> <span class="p">{</span> <span class="n">context</span><span class="p">,</span> <span class="n">size</span> <span class="k">in</span>
+    <span class="c1">// Real-time waveform rendering</span>
+    <span class="c1">// Synchronized with audio playback</span>
+    <span class="c1">// 60fps smooth animations</span>
+<span class="p">}</span>
+</code></pre></div></div>
+
+<h3 id="smart-image-handling">Smart Image Handling</h3>
+<div class="language-swift highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kd">struct</span> <span class="kt">LoadingPhotosPicker</span><span class="p">:</span> <span class="kt">View</span> <span class="p">{</span>
+    <span class="c1">// Automatic iCloud download detection</span>
+    <span class="c1">// Progress indicators for large files</span>
+    <span class="c1">// Smart cropping with gesture support</span>
+<span class="p">}</span>
+</code></pre></div></div>
+
+<p>The evolution from basic CRUD operations to sophisticated audio/video processing showcases what’s possible when AI-assisted development meets clear vision and iterative improvement.</p>]]></content><author><name></name></author><category term="ios" /><category term="swift" /><category term="app" /><summary type="html"><![CDATA[I decided to try something different today. Instead of opening Xcode and starting to code from scratch, I wanted to see what would happen if I built an entire iOS app using Claude Code - Anthropic’s new AI-powered development tool. The result? A fully functional music visualization app that went from a basic SwiftUI template to a sophisticated audio processing and video export tool.]]></summary></entry></feed>
