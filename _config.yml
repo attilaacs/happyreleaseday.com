@@ -21,9 +21,9 @@
 title: Happy Release Day
 # email: info@happyreleaseday.com
 description: >- # this means to ignore newlines until "baseurl:"
-  I'm currently making the first version of this app and I'm not sure what it'll be or if it will work. It's a very strange thing to chat in the command line and have Claude Code write things that I test and ask it to fix. There's a part of it that seems very familiar but it's odd to not have the skill to directly edit or fix things (yet). 
+  I'm currently making the first version of this app and I'm not sure if it will work.
 baseurl: "" # the subpath of your site, e.g. /blog
-url: "https://happyreleaseday.com" # the base hostname & protocol for your site, e.g. http://example.com
+url: "https://blog.happyreleaseday.com" # the base hostname & protocol for your site, e.g. http://example.com
 # github_username:  attilaacs
 
 # Build settings
