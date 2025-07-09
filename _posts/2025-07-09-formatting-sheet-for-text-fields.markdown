@@ -1,7 +1,7 @@
 ---
 layout: post
 title:  "Formatting sheet for text fields"
-date:   2025-08-09 19:40:43 +1000
+date:   2025-08-09 16:40:43 +1000
 categories: swiftui
 ---
 
